@@ -100,4 +100,100 @@
 
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
+
+user_problem_statement: "Fix authentication persistence issue where users have to re-login after page refresh, and fix 401 errors in XrozenAI tab"
+
+backend:
+  - task: "Backend authentication endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Backend running on port 8001, authentication endpoints available"
+
+frontend:
+  - task: "Fix API client environment variable configuration"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/lib/api-client.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated API_BASE_URL to use VITE_REACT_APP_BACKEND_URL from environment, created .env.local file with correct backend URL"
+
+  - task: "Fix vite configuration for mandatory settings"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/vite.config.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added build.outDir='build', changed server port from 8080 to 3000, set host to 0.0.0.0, added allowedHosts:true"
+
+  - task: "Fix AuthContext token persistence and initialization"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/contexts/AuthContext.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Improved auth initialization to directly fetch user data for token verification instead of using separate verifyToken method, removed unnecessary timeout delays"
+
+  - task: "Fix XrozenAI component authentication race condition"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/XrozenAI.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Simplified auth check to wait for authContext before loading conversations, improved error handling to not treat AI endpoint 401s as auth failures"
+
+  - task: "Update emergent.yml configuration"
+    implemented: true
+    working: true
+    file: "/app/.emergent/emergent.yml"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added source: lovable to emergent.yml as per mandatory requirements"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Fix API client environment variable configuration"
+    - "Fix AuthContext token persistence and initialization"
+    - "Fix XrozenAI component authentication race condition"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Fixed authentication persistence issues: 1) Updated API client to use correct env variable (VITE_REACT_APP_BACKEND_URL) 2) Created .env.local with production URL 3) Fixed AuthContext initialization to properly load user on page refresh 4) Fixed XrozenAI race condition by waiting for auth before loading conversations 5) Updated vite.config with mandatory settings (port 3000, outDir build, host 0.0.0.0). Frontend and backend services restarted successfully. Ready for testing - need to verify: a) Token persists across page refresh, b) No re-login required, c) XrozenAI loads without 401 errors"
+
 #====================================================================================================
