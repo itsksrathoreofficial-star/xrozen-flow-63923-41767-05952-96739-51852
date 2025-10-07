@@ -136,25 +136,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true);
       
       try {
-        // Wait a bit for API client to initialize
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
         // Check if API client already has a valid token
         if (apiClient.isAuthenticated()) {
-          console.log('🔧 AuthContext: API client already authenticated, verifying...');
+          console.log('🔧 AuthContext: API client has token, verifying...');
           const storedToken = apiClient.getAuthToken();
-          setAuthTokenState(storedToken);
           
-          // Verify token is actually working
-          const isValid = await apiClient.verifyToken();
-          if (isValid && mounted) {
-            console.log('🔧 AuthContext: Token verified, refreshing user data');
-            await refreshUser();
-          } else if (mounted) {
-            console.log('🔧 AuthContext: Token verification failed, clearing auth');
-            setUser(null);
-            setAuthTokenState(null);
-            apiClient.clearAuthToken();
+          if (mounted) {
+            setAuthTokenState(storedToken);
+          }
+          
+          // Verify token is actually working by fetching user data
+          try {
+            const userData = await apiClient.getCurrentUser();
+            if (mounted && userData) {
+              console.log('🔧 AuthContext: Token verified, user data loaded');
+              setUser(userData);
+            } else if (mounted) {
+              console.log('🔧 AuthContext: No user data returned, clearing auth');
+              setUser(null);
+              setAuthTokenState(null);
+              apiClient.clearAuthToken();
+            }
+          } catch (error) {
+            console.error('🔧 AuthContext: Token verification failed:', error);
+            if (mounted) {
+              setUser(null);
+              setAuthTokenState(null);
+              apiClient.clearAuthToken();
+            }
           }
         } else {
           console.log('🔧 AuthContext: No valid authentication found');
