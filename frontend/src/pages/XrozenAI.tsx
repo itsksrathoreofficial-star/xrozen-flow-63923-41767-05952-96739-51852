@@ -69,11 +69,7 @@ export default function XrozenAI() {
 
   // Load conversations
   const loadConversations = async () => {
-    if (!apiClient.isAuthenticated()) {
-      console.log('🔧 XrozenAI: Not authenticated, skipping conversation load');
-      setLoadingConversations(false);
-      return;
-    }
+    setLoadingConversations(true);
     
     try {
       console.log('🔧 XrozenAI: Loading conversations...');
@@ -89,11 +85,17 @@ export default function XrozenAI() {
       console.log('🔧 XrozenAI: Conversations loaded successfully');
     } catch (error) {
       console.error('🔧 XrozenAI: Error loading conversations:', error);
-      // Don't redirect to auth for AI-specific endpoints - they might not be available
-      if (error instanceof Error && error.message.includes('Unauthorized')) {
-        console.log('🔧 XrozenAI: AI endpoint not available, but keeping user logged in');
-        // Just show empty state instead of redirecting to auth
-        setConversations([]);
+      // AI endpoint might not be available or configured yet
+      // Just show empty state instead of blocking the UI
+      setConversations([]);
+      
+      // Only show toast for non-auth errors
+      if (error instanceof Error && !error.message.includes('Unauthorized')) {
+        toast({
+          title: "Notice",
+          description: "AI conversations feature is currently unavailable",
+          variant: "default"
+        });
       }
     } finally {
       setLoadingConversations(false);
