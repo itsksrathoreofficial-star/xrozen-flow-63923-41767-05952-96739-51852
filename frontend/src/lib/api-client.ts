@@ -3,7 +3,7 @@
  * Replaces all Supabase calls with REST API calls to Express backend
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL || 'http://localhost:3001/api';
 
 interface ApiResponse<T = any> {
   success: boolean;
