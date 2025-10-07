@@ -40,32 +40,24 @@ export default function XrozenAI() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Check authentication
+  // Check authentication and load conversations
   useEffect(() => {
-    const checkAuth = async () => {
-      // Wait for auth context to initialize
-      if (authLoading) {
-        console.log('🔧 XrozenAI: Auth context still loading, waiting...');
-        return;
-      }
-      
-      // Check if user is authenticated through context
-      if (!isAuthenticated || !apiClient.isAuthenticated()) {
-        console.log('🔧 XrozenAI: Not authenticated, redirecting to auth');
-        navigate('/auth');
-        return;
-      }
-      
-      try {
-        console.log('🔧 XrozenAI: User authenticated, loading conversations');
-        loadConversations();
-      } catch (error) {
-        console.error('🔧 XrozenAI: Auth check failed:', error);
-        // Don't redirect for AI-specific failures
-      }
-    };
+    // Wait for auth context to finish loading
+    if (authLoading) {
+      console.log('🔧 XrozenAI: Auth context still loading, waiting...');
+      return;
+    }
     
-    checkAuth();
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      console.log('🔧 XrozenAI: Not authenticated, redirecting to auth');
+      navigate('/auth');
+      return;
+    }
+    
+    // User is authenticated, load conversations
+    console.log('🔧 XrozenAI: User authenticated, loading conversations');
+    loadConversations();
   }, [navigate, isAuthenticated, authLoading]);
 
   // Auto-scroll to bottom
