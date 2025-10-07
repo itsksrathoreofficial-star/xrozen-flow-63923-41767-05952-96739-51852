@@ -22,6 +22,7 @@ export default defineConfig(({ mode }) => ({
     exclude: ['better-sqlite3']
   },
   build: {
+    outDir: 'build',
     rollupOptions: {
       external: ['better-sqlite3'],
       input: {
@@ -33,8 +34,9 @@ export default defineConfig(({ mode }) => ({
     global: 'globalThis',
   },
   server: {
-    host: "::",
-    port: 8080,
+    port: 3000,
+    host: '0.0.0.0',
+    allowedHosts: true,
     fs: {
       allow: ['..', '../..', '../../..'],
       deny: ['**/src/server/**']
