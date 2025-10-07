@@ -29,7 +29,7 @@ class ApiClient {
     const storedToken = localStorage.getItem('auth_token');
     
     if (storedToken) {
-      console.log('🔧 ApiClient: Found stored token, checking validity');
+      console.log('🔧 ApiClient: Found stored token in localStorage');
       
       // Check if token is expired
       if (this.isTokenExpired(storedToken)) {
@@ -38,12 +38,13 @@ class ApiClient {
         this.authToken = null;
         this.authState = 'unauthenticated';
       } else {
-        console.log('🔧 ApiClient: Stored token is valid, setting it');
+        console.log('🔧 ApiClient: Stored token is valid and not expired');
+        console.log('🔧 ApiClient: Using backend URL:', this.baseURL);
         this.authToken = storedToken;
         this.authState = 'authenticated';
       }
     } else {
-      console.log('🔧 ApiClient: No stored token found');
+      console.log('🔧 ApiClient: No stored token found in localStorage');
       this.authState = 'unauthenticated';
     }
   }
