@@ -21,6 +21,7 @@ class ApiClient {
 
     constructor() {
     this.baseURL = API_BASE_URL;
+    console.log('🔧 ApiClient: Initialized with base URL:', this.baseURL);
     this.initializeAuth();
   }
 
